@@ -1,0 +1,141 @@
+# 用户基础
+## 用户、组
+- 每个用户拥有一个userID，OS实际使用的是userID
+- 每一个可登录用户拥有一个shell
+- 每个进程以一个用户身份运行
+- 用户分为：
+    - root用户(ID为0)
+    - 系统用户(1~499)
+    - 普通用户(500以上)
+- `id` 显示用户信息
+- `passwd`修改当前用户密码
+
+## 相关文件
+- `etc/passwd` 保存用户信息
+    - 格式：
+    - `用户名:密码(x表示保存在shadow文件中):userID:组ID:用户描述信息:用户家目录:用户登陆的shall`
+- `etc/shadow` 保存用户密码
+    - 格式
+    - `用户名：密码(!!表示没有创建密码,加密方式$加密盐$加密后的内容)：unknown：unknown`
+- `etc/group` 保存组信息
+    - 格式：
+    - `组名：组密码`
+
+## 查看登陆的用户
+- `whoami` 显示当前用户
+- `who` 显示有哪些用户已经登陆系统
+- `w` 显示有哪些用户已经登陆，且在干什么
+
+## 创建一个组
+- `useradd username`
+    - `etc/passwd`中添加用户信息
+    - 如果使用`passwd`创建密码，则该密码加密保存在`/etc/shadow`中
+    - 为用户创建一个新的家目录`/home/username`
+    - 将`/tec/skel`中的文件复制到用户的家目录中(仅对新加的用户)
+    - 建立一个与用户名相同的组，新建用户默认属于该同名组
+- 参数
+    - `-d 家目录`
+    - `-s 登陆shell`
+    - `-u userid`
+    - `-g 主组`
+    - `-G 附属组(more31，用,分割)`
+
+## 修改用户信息
+- `usermod 参数 username`
+- 参数
+    - `-l 新用户名`
+    - `-u 新userID`
+    - `-d 用户家目录位置`
+    - `-g 用户所属主组`
+    - `-G 用户所属附属组`
+    - `-L` 锁定用户使其不能登陆
+    - `-U` 解除锁定
+
+## 删除用户
+- `userdel username` 保留用户的家目录
+- `userdel -r username` 同时删除用户的家目录
+
+## 创建，修改，删除组
+- 创建
+	`groupadd groupname`
+- 修改
+	`groupmod -n newname oldname` 修改组名
+    `groupmod -g newGid oldGid` 修改组id
+- 删除
+	`groupdel groupname`
+
+# 权限
+- 每个进程都是以某个用户的身份运行，所以进程的权限与该用户的权限一样，用户的权限大，则该进程拥有的权限就大
+- 权限详情
+|权限|对文件的影响|对目录的影响|
+|---|||
+|r(读取)|可读取文件内容|可列出目录内容|
+|w(写入)|可以修改文件内容|可在目录中创建删除文件|
+|x(执行)|可以作为命令执行|可访问目录内容|
+**目录必须拥有x权限，否则无法查看其内容**
+
+## UGO
+- linux权限基于UGO模型进行控制
+    - UGO(user, group, other)
+    - 每一个文件的权限基于ugo进行设置
+    - 权限三个一组(rwx)，所以一共9个权限
+    - 每一个文件拥有一个所属用户和所属组，对于UG，其他使用O权限
+    - `ls -l`可以查看当前目录下文件的详细信息
+- 格式
+    - `UGO 链接数量 所属u用户 所属组 大小 时间 文件名`
+    - `UGO`格式
+        - `文件类型|U权限|G权限|O权限` 其中各个权限有rwx
+
+## 修改文件所属用户、组
+- `chmod username file/directory`
+    - `-R` 参数递归修改
+- `chgrp groupname file/directory`
+    - `-R` 参数递归修改
+
+## 修改权限
+- `chmod 模式 文件`
+- 模式分为
+    - u、g、o分别代表用户，组和其他
+    - a 代指ugo
+    - +、- 代指加入或者删除对应权限
+    - r、w、x代表三种权限
+    - example：
+        - `chmod u+rw file`
+        - `chmod a-x file`
+- **模式利用数字方式修改**
+    - r = 4(2^2)
+    - w = 2(2^1)
+    - x = 1(2^0)
+    - 用三个数字表示UGO对应权限
+        - example 
+        - 777 == rwxrwxrwx
+        - 660 == rw-rw----
+
+## 默认权限
+- 每一个终端都用户一个umask属性，来确定新建文件、文件夹的默认权限
+- umask 用数字权限方式表示，比如002
+- 目录的默认权限是：777 减去 umask
+- 文件的默认权限是：666 减去 umask
+- 默认umask值
+    - 普通用户：0002
+        - file: 666-002=664
+        - directory: 777-002=775
+    - root用户：0022
+- `umask`查看umask值
+- `umask value`设置umask值
+## 特殊权限
+- umask中是四位，其中第一位是特殊权限
+|权限|对文件的影响|对目录的影响|
+|---|||
+|suid|以文件的所属用户身份执行，而非执行文件的用户(比如命令`passwd`)|nothing|
+|sgid|以文件所属组身份执行|在该用户中创建的任意新文件的所属组与该目录的所属组相同(vital)|
+|sticky|nothing|对目录拥有写入权限的用户仅可以删除其拥有的文件，无法删除其他用户所拥有的文件|
+## 设置特殊权限 - 会替换x
+- `chmod u+s file/directory` 设置suid
+- `chmod g+s file/directory` 设置sgid
+- `chmod o+t file/directory` 设置sticky
+- 与普通权限一样，也可以使用数字方式表示
+    - SUID = 4
+    - GUID = 2
+    - Sticky = 1
+    - example 4700 == rws------
