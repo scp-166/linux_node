@@ -1,0 +1,91 @@
+# Linux 多命令协作
+## 管道和重定向
+- 命令行shell的数据流有以下定义
+|名称|说明|编号|默认|
+|---|
+|STDIN|标准输入|0|键盘|
+|STDOUT|标准输出|1|终端|
+|STDERR|标准错误|2|终端|
+- 控制CLI的数据流
+|分类|关键字|定义|例子|
+|-|
+|重定向|>|将STDOUT重定向到文件(覆盖)|ls>outfile|
+||>>|将STDOUT重定向到文件(追加)|data>>outfile|
+||2>|将STDERR重定向到文件(覆盖)|ls nothere 2> errorout|
+||2>&1|将STDERR和STDOUT结合|ls nothere 2>&1 alloutput|
+||<|重定向STDIN|grep linuxcast < /etc/passwd|
+|管道|shift+\|将一个命令的STDOUT作为另一个命令的STDIN|ls -l 符号 grep linuxcast|
+# 文本处理
+## 文件预览
+- cat 查看文件信息
+- more 向下翻页形式查看文件内容
+- less 向上翻页形式查看文件内容
+- head 查看文件的开始10行or指定行数
+- tail 查看文件的结束10行or指定行数
+## 基于关键字搜索
+- grep
+`grep 'linuxcast' /etc/passwd`
+`find / -user linuxcast | grep Video`
+- 参数
+    - i 在搜索的时候忽略大小写
+    - n 显示结果所在行数
+    - v 输出不带关键字的行
+    - A+number 输出的时候包含结果所在行之后的指定行数
+    - B+number 输出的时候包含结构所在行之前的指定行数
+
+## 基于列处理文本
+- cut
+`cut -d: -fl /etc/passwd`
+`grep linuxcast /etc/passwd | cut -d: -f3`
+- 参数
+    - d 指定分割字符（默认tab）
+    - f 指定输出的列号
+    - c 基于字符进行切割 `cut -c2-6 /etc/passwd`
+
+## 文本统计
+- wc
+`wc linuxcast`
+- 参数
+    - l 只统计行数
+    - w 只统计单词
+    - c 只统计字节数
+    - m 值统计字符数
+## 文件排序
+- sort
+- 参数
+    - r 进行倒序排序
+    - n 基于数字进行排序
+    - f 忽略大小写
+    - u 删除重复行
+    - t c 使用c作为分隔符分割为列进行排序
+    - k x 当进行基于指定字符分割为列的排序时， 指定基于那个列排序
+## 删除重复行
+- `sort -u` 删除重复行
+- `uniq` 删除重复的相邻行，需要管道处理
+
+## 文本比价
+- diff
+- 参数
+    - i 忽略大小写
+    - b 忽略空格数量的改变
+    - u 统一显示比较信息(一般用以生成patch文件)
+        - `diff -u linuxcas linucast_new > final.patch`
+
+## 检查拼写
+- aspell
+`aspell check linuxcast`
+`aspell list < linuxcast`
+
+## 处理文本内容
+- tr
+- 删除关键字
+	`tr -d 'tmd' < test.txt > final.txt`
+- 转换大小写
+	`tr 'a-z' 'A-Z' < test.txt > final.txt`
+
+## 搜索替换
+- sed
+- `sed 's/linux/unix/g' linuxcast` 在linuxcast文件中将所有行的linux全局(g)转换为unix
+- `sed '1,50s/linux/unix/g' linuxcast` 在linuxcast文件中将头50行(1,50)的linux全局(g)转换为unix
+- `sed -e 's/linux/unix/g' -e 's/b/a/g'` -e 指定多个正则
+- `sed -f sededit linuxcast` -f 指定使用某个文件内容的正则
