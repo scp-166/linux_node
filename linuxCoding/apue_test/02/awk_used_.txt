@@ -1,0 +1,6 @@
+1.get the apue.3e/standards/sysconf.sym and pathconf.sym to the location with xxx.awk
+2.process the command: awk -f xxx.awk to ensure it is working
+3.process next command: awk -f xxx.awk > xxx.c
+4.gcc -o x xxx.c -lapue
+5../x sysconf.sym
+
