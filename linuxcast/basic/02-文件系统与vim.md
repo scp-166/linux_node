@@ -76,7 +76,7 @@
 - lsmod 查看加载的模块(驱动)
 
 # 关机、重启
-- shutdown [参数] [时间]
+- shutdown [参数]
     - -h 关闭计算机
     - -r 重新启动
 - poweroff 立即关闭计算机
