@@ -134,3 +134,20 @@ yum
 3. :n,ms/old/new/g 替换行号n到m的所有old
 4. :%s/old/new/g 替换所有
 5. :%s/old/new/gc 替换所有，但是提示
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
