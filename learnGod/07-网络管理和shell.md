@@ -44,6 +44,7 @@
     - /etc/hostname
     - 在之前可用`/etc/sysconfig/network`配置
 - 配置hosts文件
+
     - /etc/hosts
 - ping 命令格式
     - `-c 数目` 在发送指定数目的包后停止
@@ -52,14 +53,16 @@
 # shell基本概述
 - linux的shell是一种特殊的应用程序，可以通过/etc/shells文件查看
 - /bin/bash 是大多数linux中默认的shell解释器
-        [akarin@akarin test]$ cat first.sh
-        #! /bin/bash
-        # this is my first shell-script
-        touch 1.txt
-        ifconfig
+    ​    [akarin@akarin test]$ cat first.sh
+    ​    #! /bin/bash
+    ​    # this is my first shell-script
+    ​    touch 1.txt
+    ​    ifconfig
 `#！ /bin/bash`是为了声明，以下所写的均为bash语言
-        [akarin@akarin test]$ chmod +x first.sh #给权限
-		[akarin@akarin test]$ ./first.sh #执行
+```python
+[akarin@akarin test]$ chmod +x first.sh #给权限
+[akarin@akarin test]$ ./first.sh #执行
+```
 - 执行脚本的不同方式
     - 使用绝对路径
     - 使用相对路径，比如`./`
@@ -85,13 +88,15 @@
     - `/etc/profile`(全局)
     - `/home/YOURUSERNAME/.bash_profile`(局部)
 
-- $PWD ，pwd就是调用了这个变量才能进行输出
+- `$PWD` ，pwd就是调用了这个变量才能进行输出
+```python
         [akarin@akarin test]$ env | grep "PWD"
         PWD=/home/akarin/Desktop/test
         OLDPWD=/home/akarin/Desktop
         [akarin@akarin test]$ pwd
         /home/akarin/Desktop/test
         [akarin@akarin test]$
+```
 - $PATH 定义命令的默认搜索路径 **只有自己执行的命令在PATH变量包括的目录下，才可以直接使用并用tab不去，否则只能通过绝对路径or相对路径使用**
 - $USER  用户名
 - $HOME  家目录
@@ -106,14 +111,16 @@
 ### 位置变量
 - 当执行命令行操作死第一个字段表示命令字或程序名，其余的字符串参数按照从左到右的顺序一次给位置变量赋值
 - 类似c语言的 *argv[0]
-		[akarin@akarin test]$ vim add.sh
-        #! /bin/bash
-        # add demo
-        SUM=$(expr $1 + $2)
-        echo "$1 + $2 = $SUM"
-        [akarin@akarin test]$ chmod +x add.sh
-        [akarin@akarin test]$ ./add.sh 10 20
-		10 + 20 = 30
+		`[akarin@akarin test]$ vim add.sh`
+    ```python
+   #! /bin/bash
+   # add demo
+   SUM=$(expr $1 + $2)
+   echo "$1 + $2 = $SUM"
+   [akarin@akarin test]$ chmod +x add.sh
+   [akarin@akarin test]$ ./add.sh 10 20
+   10 + 20 = 30
+    ```
 
 ### 预定义变量
 - $# 命令行中位置变量的个数(程序执行了几个位置参数)
@@ -123,8 +130,3 @@
 - $! 表示上一个命令的最后一个参数
 
 # sed 和 awk
-
-
-
-
-

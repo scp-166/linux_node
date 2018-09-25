@@ -1,6 +1,12 @@
 切换root
+
+```python
 chmod u+w /etc/sudoers
 vim /etc/sudoers
 root ALL=(ALL) ALL 下 添加 用户名 ALL=(ALL) ALL
 chmod u-w /etc/sudoers
 over
+```
+
+
+
